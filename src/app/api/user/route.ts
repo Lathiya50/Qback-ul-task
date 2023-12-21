@@ -1,15 +1,26 @@
 import { Database, connectToDB } from "@/database";
+import { hashSync } from "bcrypt";
 
 export async function GET(request: Request) {
     const User = await connectToDB({ dbName: Database.user });
-    const users = await User?.find({});
+    const users = await User?.find({}).select("-password");
     return new Response(JSON.stringify(users));
 }
 
-// create POST request handler here which will create a new intel in the database and return the newly created intel
 export async function POST(request: Request) {
-    const User = await connectToDB({ dbName: Database.user });
-    const { username, password, name, role } = await request.json();
-    const user = await User?.create({ username, password, name, role });
-    return new Response(JSON.stringify({ user }));
+    try {
+        const User = await connectToDB({ dbName: Database.user });
+        const { username, password, name, role } = await request.json();
+        const hashedPassword = hashSync(password, 10);
+        const user = await User?.create({
+            username,
+            password: hashedPassword,
+            name,
+            role,
+        });
+        return new Response(JSON.stringify({ user }));
+    } catch (error) {
+        console.error("Error creating user:", error);
+        return new Response("Internal Server Error", { status: 500 });
+    }
 }

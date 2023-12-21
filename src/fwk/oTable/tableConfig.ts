@@ -138,19 +138,6 @@ function ColumnBuilder(initialConfig?: Column) {
       return this;
     },
 
-    // getAvatar = (name: string) => {
-    //   column.accessor =
-    //     (name: any) => {
-    //       return (
-    //         <Stack direction= "row" spacing = { 2} >
-    //           <Avatar sx={ { bgcolor: deepOrange[500] } }> { name.charAt(0) } < /Avatar>
-    //             < /Stack>
-    //         )
-    //     };
-    //   return this;
-    // },
-
-
     build() {
       !column.accessor && this.dataKey(column.id);
       !column.align && this.align("left");
